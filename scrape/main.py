@@ -3,6 +3,14 @@ from bs4 import BeautifulSoup
 
 data = []
 
+def save_recipe_file(file_name, recipe, link):
+    try:
+        with open(file_name, 'a') as file:
+            file.write(f'recipe: {recipe}\n')
+            file.write(f'link: {link}\n')
+    except Exception as e:
+        print(f'An error has occurred: {e}')
+
 def get_request(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
@@ -21,10 +29,12 @@ def get_request(url):
 def get_recipes(req):
     soup = BeautifulSoup(req.text, 'lxml')
 
-    main = soup.select_one('.content.entries-container.sm-grid-2.md-grid-3')
+    main = soup.select('.post.type-post')
 
-    title = main.select_one('.entry-title-link').text
-    print(title)
+    for item in main:
+        title = item.select_one('.entry-title-link').text
+        link = item.select_one('.entry-title-link')['href']
+        save_recipe_file('all_recipes.txt', title, link)
 
 
 def main():
