@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import time
 from rich.console import Console
+import json
 
-data = []
 
 console = Console()
 
@@ -30,15 +30,20 @@ def get_request(url):
         print(f'Erro: {err}')
     return None
 
-def get_recipes(req):
+def add_recipe(recipes, title, url):
+    recipes.append(
+        {'recipe': title, 'url': url}
+    )
+
+def get_recipes(req, recipes):
     soup = BeautifulSoup(req.text, 'lxml')
 
     main = soup.select('.post.type-post')
 
     for item in main:
         title = item.select_one('.entry-title-link').text
-        link = item.select_one('.entry-title-link')['href']
-        save_recipe_file('all_recipes.txt', title, link)
+        url = item.select_one('.entry-title-link')['href']
+        add_recipe(recipes, title, url)
 
 def welcome_message():
     console.print("=" * 60, style="bold blue")
@@ -50,6 +55,13 @@ def welcome_message():
 def scraping_url_message(url, status):
     console.print(f"   - 🕵️‍♂️ [bold green]Target:[/] {url}{status}")
 
+def create_recipe_json(recipes):
+    with open('all_recipes.json', 'w', encoding='utf-8') as file:
+        json.dump(recipes, file, indent=4, ensure_ascii=False) # indent=4 for pretty formatting
+    console.print("\n" + "=" * 60, style="bold blue")
+    console.print("✅ [bold green]Saved recipes to `all_recipes.json`📜")
+    console.print("=" * 60, style="bold blue")
+
 def end_scrape_message():
     console.print("\n" + "=" * 60, style="bold blue")
     console.print("✅ [bold green]Scraping complete![/] 🥳")
@@ -57,6 +69,8 @@ def end_scrape_message():
 
 
 def main():
+    recipes= []
+
     pages = 224
     i = 1
 
@@ -71,7 +85,7 @@ def main():
             status = '[200]OK'
 
             scraping_url_message(url, status)
-            get_recipes(req)
+            get_recipes(req, recipes)
         else:
             print('Failed to retrieve page')
         i += 1
@@ -79,7 +93,10 @@ def main():
         # 1 second delay per request
         time.sleep(1)
 
-
+    # Create json file for all recipes
+    create_recipe_json(recipes)
+    
+    # End message
     end_scrape_message()
 
 main()
