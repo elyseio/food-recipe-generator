@@ -22,7 +22,7 @@ def main() -> None:
 
     welcome_message()  # Display welcome message
     
-    while i <= 2:
+    while i <= pages:
         url = f'https://panlasangpinoy.com/recipes/page/{i}'
 
         req = get_request(url)
