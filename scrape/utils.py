@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-from typing import Optional
+from typing import Optional, List, Dict
+from rich.console import Console
+
+console = Console()
 
 def get_request(url: str) -> Optional[requests.Response]:
     """
@@ -28,30 +31,28 @@ def get_request(url: str) -> Optional[requests.Response]:
     return None
 
 
-def add_recipe(recipes: list[dict], title: str, url: str) -> None:
+def add_recipe(recipes: List[Dict[str, str]], title: str, url: str) -> None:
     """
     Adds a recipe to the list of recipes.
 
     Args:
-        recipes (list): The list to store recipe dictionaries.
+        recipes (List[Dict[str, str]]): The list to store recipe dictionaries.
         title (str): The title of the recipe.
         url (str): The URL of the recipe.
 
     Returns:
         None
     """
-    recipes.append(
-        {'recipe': title, 'url': url}
-    )
+    recipes.append({'recipe': title, 'url': url})
 
 
-def get_recipes(req: requests.Response, recipes: list[dict]) -> None:
+def get_recipes(req: requests.Response, recipes: List[Dict[str, str]]) -> None:
     """
     Parses the HTML response to extract recipe titles and URLs, and adds them to the recipes list.
 
     Args:
         req (requests.Response): The HTTP response object containing the HTML content.
-        recipes (list): The list to store parsed recipe data.
+        recipes (List[Dict[str, str]]): The list to store parsed recipe data.
 
     Returns:
         None
@@ -65,19 +66,19 @@ def get_recipes(req: requests.Response, recipes: list[dict]) -> None:
         add_recipe(recipes, title, url)
 
 
-def create_recipe_json(recipes: list[dict]) -> None:
+def create_recipe_json(recipes: List[Dict[str, str]]) -> None:
     """
     Saves the list of recipes to a JSON file.
 
     Args:
-        recipes (list): The list of recipes to be saved.
+        recipes (List[Dict[str, str]]): The list of recipes to be saved.
 
     Returns:
         None
     """
     with open('../data/all_recipes.json', 'w', encoding='utf-8') as file:
         json.dump(recipes, file, indent=4, ensure_ascii=False)
-    print("✅ [bold green]Saved recipes to `all_recipes.json`📜")
+    console.print("\n✅ [bold green]Saved recipes to `all_recipes.json`📜")
 
 
 def save_recipe_file(file_name: str, recipe: str, link: str) -> None:
@@ -98,4 +99,3 @@ def save_recipe_file(file_name: str, recipe: str, link: str) -> None:
             file.write(f'link: {link}\n')
     except Exception as e:
         print(f'An error has occurred: {e}')
-

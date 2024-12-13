@@ -1,6 +1,7 @@
 import time
 from rich.console import Console
-from utils import get_request, get_recipes, save_recipe_file, create_recipe_json, welcome_message, scraping_url_message, end_scrape_message
+from utils import get_request, get_recipes, save_recipe_file, create_recipe_json
+from messages import welcome_message, scraping_url_message, end_scrape_message
 
 console = Console()
 
@@ -21,7 +22,7 @@ def main() -> None:
 
     welcome_message()  # Display welcome message
     
-    while i <= pages:
+    while i <= 2:
         url = f'https://panlasangpinoy.com/recipes/page/{i}'
 
         req = get_request(url)
@@ -43,6 +44,5 @@ def main() -> None:
     end_scrape_message()
 
 
-# Start program
 if __name__ == "__main__":
     main()
