@@ -1,7 +1,14 @@
+import { useNavigate } from 'react-router-dom'
 
 function GenerateCravingsButton() {
+  const navigate = useNavigate()
+
+  function goBattle() {
+    navigate('/battle-page') 
+  }
+
   return(
-    <button>generate cravings</button>
+    <button onClick={goBattle}>generate cravings</button>
   )
 }
 
