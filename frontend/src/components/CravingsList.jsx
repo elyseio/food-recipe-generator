@@ -11,6 +11,7 @@ function CravingsList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // Set the recipes from /all-recipes.json
   useEffect(() => {
     const fetchRecipes = async() => {
       try {
@@ -30,6 +31,7 @@ function CravingsList() {
     fetchRecipes()
   }, [])
 
+  // Set recipe data for the card
   useEffect(() => {
     if(recipes.length != 0) {
       setRecipe1(recipes[0])
