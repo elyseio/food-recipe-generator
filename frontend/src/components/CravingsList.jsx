@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react'
 
+import CravingsCard from './CravingsCard.jsx'
+
 function CravingsList() {
   const [recipes, setRecipes] = useState([])
+
+  const [recipe1, setRecipe1] = useState({})
+  const [recipe2, setRecipe2] = useState({})
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -24,14 +30,21 @@ function CravingsList() {
     fetchRecipes()
   }, [])
 
+  useEffect(() => {
+    if(recipes.length != 0) {
+      setRecipe1(recipes[0])
+      setRecipe2(recipes[2])
+    }
+  }, [recipes])
+
   if(loading) return <p>Loading....</p>
   if(error) return <p>{`Error: ${error}`}</p>
 
   return(
     <div>
-      <h1>{recipes[0].recipe}</h1>
-      <p>vs</p>
-      <h1>{recipes[1].recipe}</h1>
+      <CravingsCard recipe={recipe1} />
+      <p>or</p>
+      <CravingsCard recipe={recipe2} />
     </div>
   )
 }
